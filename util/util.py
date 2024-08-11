@@ -1,7 +1,5 @@
 import collections
-import copy
 import datetime
-import gc
 import time
 
 # import torch
@@ -50,7 +48,7 @@ def importstr(module_str, from_=None):
     if from_:
         try:
             return getattr(module, from_)
-        except:
+        except:  # noqa: E722
             raise ImportError('{}.{}'.format(module_str, from_))
     return module
 

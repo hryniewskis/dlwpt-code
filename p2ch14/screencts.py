@@ -1,16 +1,13 @@
 import argparse
 import sys
 
-import numpy as np
+from torch.utils.data import DataLoader, Dataset
 
-import torch.nn as nn
-from torch.autograd import Variable
-from torch.optim import SGD
-from torch.utils.data import Dataset, DataLoader
-
-from util.util import enumerateWithEstimate, prhist
-from .dsets import getCandidateInfoList, getCtSize, getCt
 from util.logconf import logging
+from util.util import enumerateWithEstimate, prhist
+
+from .dsets import getCandidateInfoList, getCt
+
 # from .model import LunaModel
 
 log = logging.getLogger(__name__)
@@ -21,7 +18,12 @@ log.setLevel(logging.INFO)
 
 class LunaScreenCtDataset(Dataset):
     def __init__(self):
-        self.series_list = sorted(set(candidateInfo_tup.series_uid for candidateInfo_tup in getCandidateInfoList()))
+        self.series_list = sorted(
+            set(
+                candidateInfo_tup.series_uid
+                for candidateInfo_tup in getCandidateInfoList()
+            )
+        )
 
     def __len__(self):
         return len(self.series_list)
@@ -31,7 +33,15 @@ class LunaScreenCtDataset(Dataset):
         ct = getCt(series_uid)
         mid_ndx = ct.hu_a.shape[0] // 2
 
-        air_mask, lung_mask, dense_mask, denoise_mask, tissue_mask, body_mask, altneg_mask = ct.build2dLungMask(mid_ndx)
+        (
+            air_mask,
+            lung_mask,
+            dense_mask,
+            denoise_mask,
+            tissue_mask,
+            body_mask,
+            altneg_mask,
+        ) = ct.build2dLungMask(mid_ndx)
 
         return series_uid, float(dense_mask.sum() / denoise_mask.sum())
 
@@ -43,13 +53,15 @@ class LunaScreenCtApp:
             sys_argv = sys.argv[1:]
 
         parser = argparse.ArgumentParser()
-        parser.add_argument('--batch-size',
-            help='Batch size to use for training',
+        parser.add_argument(
+            "--batch-size",
+            help="Batch size to use for training",
             default=4,
             type=int,
         )
-        parser.add_argument('--num-workers',
-            help='Number of worker processes for background data loading',
+        parser.add_argument(
+            "--num-workers",
+            help="Number of worker processes for background data loading",
             default=8,
             type=int,
         )
@@ -86,7 +98,5 @@ class LunaScreenCtApp:
         prhist(list(series2ratio_dict.values()))
 
 
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     LunaScreenCtApp().main()

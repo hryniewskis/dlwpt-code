@@ -1,14 +1,9 @@
-import math
 import random
 import warnings
 
 import numpy as np
 import scipy.ndimage
 
-import torch
-from torch.autograd import Function
-from torch.autograd.function import once_differentiable
-import torch.backends.cudnn as cudnn
 
 from util.logconf import logging
 log = logging.getLogger(__name__)

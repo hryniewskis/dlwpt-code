@@ -1,16 +1,13 @@
 import argparse
 import sys
 
-import numpy as np
-
-import torch.nn as nn
-from torch.autograd import Variable
-from torch.optim import SGD
 from torch.utils.data import DataLoader
 
-from util.util import enumerateWithEstimate
-from .dsets import PrepcacheLunaDataset, getCtSampleSize
 from util.logconf import logging
+from util.util import enumerateWithEstimate
+
+from .dsets import PrepcacheLunaDataset
+
 # from .model import LunaModel
 
 log = logging.getLogger(__name__)
@@ -26,13 +23,15 @@ class LunaPrepCacheApp:
             sys_argv = sys.argv[1:]
 
         parser = argparse.ArgumentParser()
-        parser.add_argument('--batch-size',
-            help='Batch size to use for training',
+        parser.add_argument(
+            "--batch-size",
+            help="Batch size to use for training",
             default=1024,
             type=int,
         )
-        parser.add_argument('--num-workers',
-            help='Number of worker processes for background data loading',
+        parser.add_argument(
+            "--num-workers",
+            help="Number of worker processes for background data loading",
             default=8,
             type=int,
         )
@@ -64,5 +63,5 @@ class LunaPrepCacheApp:
             pass
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     LunaPrepCacheApp().main()
